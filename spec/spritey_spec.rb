@@ -1,11 +1,14 @@
 require 'minitest/autorun'
 require 'minitest/spec'
-require 'imageconcat'
+require 'spritey'
+require 'w3c_validators'
+
+include W3CValidators
 
 
-describe ImageConcat do
-  before do
-    @concatenator = ImageConcat.new
+describe Spritey do
+  before (:each) do
+    @concatenator = Spritey.new
   end
 
   it "loads an image file" do
@@ -41,7 +44,27 @@ describe ImageConcat do
   it "raises error if called without images" do
     proc{@concatenator.concatenate}.must_raise RuntimeError
   end
- 
+
+  it "can create valid css files" do
+    
+    @val = CSSValidator.new
+    
+    @concatenator.add_image("spec/resources/ruby.png")
+    @concatenator.add_image("spec/resources/mariadb_irregular.png")
+    @concatenator.add_image("spec/resources/php.png")
+    @val.validate_text(@concatenator.generate_sprites_css).errors.length.must_equal 0
+
+  end
+
+  it "saves the file" do
+    @writer = Spritey.new    
+    @writer.add_image("spec/resources/ruby.png")
+    @writer.add_image("spec/resources/mariadb_irregular.png")
+    @writer.add_image("spec/resources/php.png")
+    @writer.save_css("sprites.css")
+    File.open("sprites.css").must_be_instance_of File
+  end
+  
   
 end
 
