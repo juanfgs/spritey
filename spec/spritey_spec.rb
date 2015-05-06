@@ -28,7 +28,7 @@ describe Spritey do
     @concatenator.add_image("spec/resources/ruby.png")
     @concatenator.add_image("spec/resources/go.png")
     @concatenator.add_image("spec/resources/php.png")    
-    image = @concatenator.concatenate
+    image = @concatenator.concatenate("composite.png")
     image.must_be_instance_of Magick::Image
     image.columns.must_equal 384
     image.rows.must_equal 128
@@ -38,11 +38,11 @@ describe Spritey do
     @concatenator.add_image("spec/resources/ruby.png")
     @concatenator.add_image("spec/resources/mariadb_irregular.png")
     @concatenator.add_image("spec/resources/php.png")    
-    @concatenator.concatenate.rows.must_equal 175
+    @concatenator.concatenate("composite.png").rows.must_equal 175
   end
 
   it "raises error if called without images" do
-    proc{@concatenator.concatenate}.must_raise RuntimeError
+    proc{@concatenator.concatenate("composite.png")}.must_raise RuntimeError
   end
 
   it "can create valid css files" do
@@ -61,7 +61,7 @@ describe Spritey do
     @writer.add_image("spec/resources/ruby.png")
     @writer.add_image("spec/resources/mariadb_irregular.png")
     @writer.add_image("spec/resources/php.png")
-    @writer.save_css("sprites.css")
+    @writer.save_css("sprites")
     File.open("sprites.css").must_be_instance_of File
   end
   

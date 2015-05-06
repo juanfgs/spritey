@@ -8,8 +8,6 @@ class Spritey
     @images = []
     @max_height = 0
   end
-  
-
 
   def add_image(filename)
     image = load_image(filename)
@@ -20,19 +18,17 @@ class Spritey
 
 
   def save_css(filename)
-    concatenate
-    css_file = File.open(filename, "w")
+    concatenate(filename + ".png")
+    css_file = File.open(filename +".css", "w")
     css_file.write generate_sprites_css
     css_file.close
   end
-
-
   
   def load_image(filename)
     Magick::Image::read(filename)[0]    
   end
 
-  def concatenate
+  def concatenate(dest_image_filename)
     raise RuntimeError unless @images.any?
 
     new_image = Magick::Image.new(total_width,@max_height){
@@ -48,7 +44,7 @@ class Spritey
       last_width += img.columns      
     end
     puts "Total image size #{total_width},#{@max_height}"    
-    new_image.write("composite.png")
+    new_image.write(dest_image_filename)
   end
 
   def generate_sprites_css
@@ -77,6 +73,6 @@ class Spritey
     width
   end
   
-
-  
 end
+
+
