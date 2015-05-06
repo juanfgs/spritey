@@ -19,14 +19,24 @@ class ImageConcat
   end
 
   def concatenate
-    Magick::Image.new(total_width,max_height)
-    @images.each do |img|
-      pixels = img.get_pixels(0,0,img.columns,img.rows)
+    raise RuntimeError unless @images.any?
+    new_image = Magick::Image.new(total_width,@max_height){
+      self.format = 'png'
+      self.background_color = 'none'
+    }
+
+    last_width = 0
+    puts "Composing image..."
+    @images.each_with_index do |img,idx|
+      puts "Image ##{idx} starts at: #{last_width}"
+      img.alpha Magick::BackgroundAlphaChannel
+      new_image.composite!(img,last_width, 0, Magick::OverCompositeOp )
+      last_width += img.columns      
     end
+    puts "Total image size #{total_width},#{@max_height}"    
+    new_image.write("composite.png")
   end
 
-
-  
   def total_width
     width = 0
     @images.each do |image|

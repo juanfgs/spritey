@@ -21,12 +21,14 @@ describe ImageConcat do
   end
   
   it "writes a new image with the width of all the loaded images" do
+
     @concatenator.add_image("spec/resources/ruby.png")
     @concatenator.add_image("spec/resources/go.png")
     @concatenator.add_image("spec/resources/php.png")    
-    @concatenator.concatenate.must_be_instance_of Magick::Image
-    @concatenator.concatenate.columns.must_equal 384
-    @concatenator.concatenate.rows.must_equal 128
+    image = @concatenator.concatenate
+    image.must_be_instance_of Magick::Image
+    image.columns.must_equal 384
+    image.rows.must_equal 128
   end
   
   it "the resulting image has the size of the biggest image" do
@@ -36,7 +38,10 @@ describe ImageConcat do
     @concatenator.concatenate.rows.must_equal 175
   end
 
-  
+  it "raises error if called without images" do
+    proc{@concatenator.concatenate}.must_raise RuntimeError
+  end
+ 
   
 end
 
