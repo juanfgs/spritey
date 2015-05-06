@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+require 'spritey'
+require 'optparse'
+
+@concat = Spritey::Spritey.new
+options = {}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: example.rb [options]"
+
+  opts.on("-o", "--output FILENAME", "specify the output file") do |v|
+    options[:output] = v
+  end
+  opts.on("-i", "--input FILENAMES,", "specify the input file/s separated by comma") do |v|
+    options[:input] = v.split(",")
+  end
+  
+end.parse!
+
+
+
+options[:input].each do |arg|
+    begin    
+      @concat.add_image(arg)
+    rescue Magick::ImageMagickError
+      puts "failed to load image #{arg}"
+    end
+
+end
+
+
+
+
+
+@concat.save_css options[:output]
